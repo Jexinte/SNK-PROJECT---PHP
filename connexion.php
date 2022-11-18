@@ -112,15 +112,15 @@
     ?>
   <h1 class="h1">Connexion</h1>
     <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST">
-
+    <span class="info-form">Tous les champs munis d'un * sont obligatoires</span>
       <label for="mail">
-        Adresse mail : <br>
+        Adresse mail * <br>
         <input type="mail" name="mail" id="mail"> <br>
         <span id="errorMail"><?php echo $errorMail; ?></span>
       </label>
 
       <label for="motdepasse">
-        Mot de passe : <br>
+        Mot de passe * <br>
         <input type="password" name="motdepasse" id="motdepasse"> <br>
         <span id="errorPassword"><?php echo $errorPassword; ?></span>
       </label>
@@ -129,5 +129,13 @@
     </form>
 
   </div>
+
+  <style>
+
+    body{
+      background-image: url('./img/mikasa.jpg');
+      background-size: cover;
+    }
+  </style>
 </body>
 </html>

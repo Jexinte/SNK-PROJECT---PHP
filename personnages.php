@@ -21,7 +21,8 @@
     while($data = $recuperation_image->fetch()):
       ?>
 
-    <a href="/personnage.php?id=<?php echo $data['id']?>" class="box">
+    <a href="personnage.php?id=<?php echo $data['id']?>" class="box"> 
+ 
 
       <span class="nom"><?php echo $data['nom'] ?></span>
       <img class="imagecarte" src="<?php echo $data['imageCarte'] ?>" alt="" width="100" height="100" >
@@ -32,7 +33,7 @@
   </div>
 
   <?php include './inc/footer_personnages.php'?>
-  
+
   </div>
 
 
