@@ -90,8 +90,19 @@ input:invalid{
 
 }
 
+#afficheMotDePasse{
+  width: 20px;
+  padding: 0;
+}
+
+::placeholder{
+  font-family: var(--fredokaOne);
+  font-weight: var(--600);
+}
+
 #errorMail , #errorPassword{
   color:red;
   font-size: 1em;
   transition: all ease-in 700ms;
 }
+

@@ -1,6 +1,6 @@
 <header class="header">
   <nav>
-    <a href="connexion.php">Inscription</a>
+    <a href="inscription.php">Inscription</a>
   </nav>
 </header>
 
