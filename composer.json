@@ -1,0 +1,15 @@
+{
+    "name": "mamad/shingeki-no-kyojin",
+    "autoload": {
+        "psr-4": {
+            "Mamad\\ShingekiNoKyojin\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Yokke",
+            "email": "mdembelepro@gmail.com"
+        }
+    ],
+    "require": {}
+}

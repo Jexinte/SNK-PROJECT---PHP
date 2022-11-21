@@ -1,46 +1,33 @@
-<?php
-
- include './config/connexion_bdd2.php';
-include './config/connexion_bdd.php';
-
-?>
+<?php include './config/connexion_bdd2.php';?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Personnages</title>
+  <meta name="viewport" content="width=
+  , initial-scale=1.0">
+  <title>Mahr</title>
 </head>
 <body>
-  <div class="container">
+<div class="container">
     <!-- HEADER -->
     <?php include './inc/menu_personnages.php';?>
 
     <div class="container-box">
 
       <?php 
-    
-    $recuperation_image = $bdd2->query('SELECT * FROM personnages2 ORDER BY nom');
+    $origine = $_GET['origine'];
+    $recuperation_image = $bdd2->query("SELECT * FROM personnages2 WHERE origine ='$origine' ORDER BY nom");
     
     while($data = $recuperation_image->fetch()):
       ?>
 
     <a href="personnage.php?id=<?php echo $data['id']?>" class="box"> 
 
-      <?php  if($data['origine'] === "Eldiens"): ?>
-      <span class="nom" id="eldiens-nom"><?php echo $data['nom'];?></span>
-      <?php endif;?>
-
       <?php  if($data['origine'] === "Mahr"): ?>
       <span class="nom" id="mahr-nom"><?php echo $data['nom'];?></span>
       <?php endif;?>
-
-      <?php  if($data['origine'] === "Titans"): ?>
-      <span class="nom" id="titans-nom"><?php echo $data['nom'];?></span>
-      <?php endif;?>
-
-      <img class="imagecarte" src="<?php echo $data['imageCarte'] ?>" alt="" width="100" height="100" >
+  <img class="imagecarte" src="<?php echo $data['imageCarte'] ?>" alt="" width="100" height="100" >
 
     </a>
 
@@ -57,19 +44,10 @@ include './config/connexion_bdd.php';
 
   <style>
 
-    
-   
-
-#eldiens-nom{
+#mahr-nom{
   color:#8c6f1d;
 }
-#mahr-nom{
-  color:#d54324;
-}
 
-#titans-nom{
-  color:gray;
-}
 .container-box
 {
   display: flex;
@@ -111,6 +89,6 @@ padding: .5em;
   height: 100%;
   border-radius: 20px;
 }
-  </style>
+</style>
 </body>
 </html>

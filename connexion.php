@@ -1,4 +1,8 @@
-<?php include './config/connexion_bdd.php' ?>
+<?php 
+  include './config/connexion_bdd.php';
+   include 'vendor/autoload.php';
+   use ReallySimpleJWT\Token;
+ ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,16 +20,16 @@
   <div class="container">
     <?php include './inc/header_connexion.php';?>
     <?php 
-    
+ 
     $errorMail = $errorPassword = "";
 
     if(isset($_POST['submit'])){
-
-
-        function verifieLadresseMail() 
-        {
-  
-          global $errorMail ;
+      
+      
+      function verifieLadresseMail() 
+      {
+        
+        global $errorMail ;
 
           if(empty($_POST['mail']))
             $errorMail = "Ce champ ne peut être vide";
@@ -47,62 +51,87 @@
         verifieLeMotDePasse();
 
         
+   
+
+
+
       function siLadresseMailNexistePas()
       {
         global $bdd;
         global $errorMail;
       
-        $mail = $_POST['mail'];
-        $mail_in_database = "";
-        $requete_verification_des_informations_dans_la_bdd = $bdd->query(" SELECT * FROM users WHERE mail != '$mail'  ");
-          
-          while($data = $requete_verification_des_informations_dans_la_bdd->fetch())
-          {
-            $mail_in_database = $data['mail'];
+        $mailDeLutilisateurQuiSeConnecte = $_POST['mail'];
+        
+        $requete_verification_des_informations_dans_la_bdd = $bdd->query(" SELECT * FROM users WHERE mail = '$mailDeLutilisateurQuiSeConnecte' ");
+        $utilisateur = $requete_verification_des_informations_dans_la_bdd->fetch();
 
-              if($mail != $mail_in_database)
-                $errorMail = "L'adresse mail n'existe pas !";
-
-          }
+        if(empty($utilisateur['mail']))
+          $errorMail = "L'adresse mail n'existe pas !";
+        else
+          $errorMail = "";
+      
 
       }
       
       siLadresseMailNexistePas();
 
 
-      //* Une dernière vérification est effectué notamment sur le format de l'adresse mail puis une recherche de l'adresse mail est effectué dans la base de données afin de savoir si elle existe
-        function siToutEstBon()
-        {
-            global $bdd;
-            global $errorMail;
-            global  $errorPassword;
-           
-            if (!empty($_POST['motdepasse']) && preg_match('/^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$/',$_POST['mail']))
-           {
-                $mail = $_POST['mail'];
-                $motdepasse = $_POST['motdepasse'];
-                $requete_verification_des_informations_dans_la_bdd = $bdd->query(" SELECT * FROM users WHERE mail = '$mail'  ");
-       
-              while($data = $requete_verification_des_informations_dans_la_bdd->fetch())
-              {
-                  if(password_verify($motdepasse , $data['motdepasse']))
-                  {
-                    //* La redirection sera faite plus tard !
-                    $errorMail = ""; 
-                    echo 'Les données correspondent';
-                  }
-        
-                   else
-                     $errorPassword = "Le mot de passe est incorrect !"; 
-                   
-              }
-             
-            }
-      }
-
-      siToutEstBon();
-
       
+      //* Une dernière vérification est effectué notamment sur le format de l'adresse mail puis une recherche de l'adresse mail est effectué dans la base de données afin de savoir si elle existe
+      $identifiantDeLutilisateurDansLePayload = "";
+      function siToutEstBon()
+      {
+          global $bdd;
+          global  $errorPassword;
+          global $identifiantDeLutilisateurDansLePayload;
+         
+          if (!empty($_POST['motdepasse']) && preg_match('/^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$/',$_POST['mail']))
+         {
+              $mail = $_POST['mail'];
+              $motdepasse = $_POST['motdepasse'];
+              $requete_verification_des_informations_dans_la_bdd = $bdd->query(" SELECT * FROM users WHERE mail = '$mail'  ");
+     
+              while($data = $requete_verification_des_informations_dans_la_bdd->fetch())
+      
+              
+            {
+          
+              
+              $payload = [
+                
+                'iat' => time(),
+                'uid' => $data['id'],
+                'exp' => time() + 36,
+                'iss' => 'localhost'
+              ];
+              $identifiantDeLutilisateurDansLePayload=$payload['uid'];
+                if(password_verify($motdepasse , $data['motdepasse']))
+                {                  
+                  $secret = "Lg6192*2ew2O!HH4ESK&qiQKhFG&V";
+                  global $token; 
+                  $token = Token::customPayload($payload,$secret);
+                   setcookie('token',$token,time()+3600);
+                   setcookie('userid',$identifiantDeLutilisateurDansLePayload,time()+3600);
+                   header('location:personnages.php');
+                  
+              
+                
+                }
+      
+                 else
+                   $errorPassword = "Le mot de passe est incorrect !"; 
+                   
+                 
+            }
+           
+          }
+
+          // echo $identifiantDeLutilisateurDansLePayload;
+    }
+
+    siToutEstBon();
+
+ 
       
       //! END OF ISSET CONDITON
     }
