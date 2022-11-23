@@ -26,6 +26,15 @@
         <p><?php echo $personnage['histoire'] ?></p>
       </div>
     </div>
+    <?php 
+      if($personnage['id_user'] === intval($_COOKIE['userid'])):
+    ?>
+    <div class="rights">
+      <a href="modifier_un_personnage.php?id=<?php echo $id_personnage ?>" id="modifier" >Modifier</a>
+      <a href="#" id="supprimer" >Supprimer</a>
+
+    </div>
+    <?php endif;?> 
     <?php endwhile; ?>
     <?php include './inc/footer_personnages.php' ?>
   </div>
@@ -38,7 +47,7 @@ justify-content: center;
 width: 900px;
 margin: 0 auto 3em;
 gap: 2em;
-transform: skew(-5deg);
+
 box-shadow: 5px 5px 10px rgba(0,0,0,.2);
 
 }
@@ -65,6 +74,27 @@ height: 100%;
 
 header{
 margin-bottom: 8em;
+}
+
+
+.rights{
+  display: flex;
+justify-content: center;
+gap: 4.5em;
+}
+
+#modifier{
+  background: lightgreen;
+color: white;
+padding: .5em;
+border-radius: 10px;
+}
+
+#supprimer{
+  background: crimson;
+color: white;
+padding: .5em;
+border-radius: 10px;
 }
     </style>
 </body>

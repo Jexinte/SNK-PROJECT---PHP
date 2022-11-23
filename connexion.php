@@ -101,7 +101,7 @@
                 
                 'iat' => time(),
                 'uid' => $data['id'],
-                'exp' => time() + 36,
+                'exp' => time() + 86400,
                 'iss' => 'localhost'
               ];
               $identifiantDeLutilisateurDansLePayload=$payload['uid'];
@@ -110,8 +110,8 @@
                   $secret = "Lg6192*2ew2O!HH4ESK&qiQKhFG&V";
                   global $token; 
                   $token = Token::customPayload($payload,$secret);
-                   setcookie('token',$token,time()+3600);
-                   setcookie('userid',$identifiantDeLutilisateurDansLePayload,time()+3600);
+                   setcookie('token',$token,time()+86400);
+                   setcookie('userid',$identifiantDeLutilisateurDansLePayload,time()+86400);
                    header('location:personnages.php');
                   
               

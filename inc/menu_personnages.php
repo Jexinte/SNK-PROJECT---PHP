@@ -4,7 +4,7 @@
     <a href="eldiens.php?origine=Eldiens" id="eldiens">Eldiens</a>
     <a href="mahr.php?origine=Mahr" id="mahr">Mahr</a>
     <a href="titans.php?origine=Titans" id="titans">Titans</a>
-    <a href="#" id="creation">Crée un personnage</a>
+    <a href="creation_personnage.php" id="creation">Crée un personnage</a>
   </nav>
 </header>
 
