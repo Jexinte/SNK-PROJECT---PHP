@@ -30,28 +30,24 @@ include './config/connexion_bdd.php';
    <?php include './inc/menu_personnages.php';?>
    <?php 
 
-     $error_file_upload = "";
-     $error_file_upload_2 = "";
-     $error_nom = $error_origine = "";
-     $origine_final = "";
-     $nom_final = "";
-     
-     //* FILES NAME
-     //  $tmp_nom_image_carte = $tmp_nom_image_histoire = "";
-     $filename_image_carte_final_result = $filename_image_histoire_final_result = "";
-     
-     //* TMP NAME
-     $tmp_nom_0 = $tmp_nom_1 = "";
-     
-     //  $destination_image_carte = "img/$filename_img_carte";
-     //  $destination_image_histoire = "img/$filename_img_carte";
-     
-     $destination_image_carte =  $destination_image_histoire = "";
+    //* ERREURS
+        $error_file_upload = "";
+        $error_file_upload_2 = "";
+        $error_nom = $error_origine = "";
+
+    //* NECESSAIRE POUR LA PARTIE ENREGISTREMENT
+        $origine_final = "";
+        $nom_final = "";
+        $filename_image_carte_final_result = $filename_image_histoire_final_result = "";
+        $tmp_nom_0 = $tmp_nom_1 = "";
+        $destination_image_carte =  $destination_image_histoire = "";
      
      if(isset($_POST['submit'])){
-       
-       $user_id = intval($_POST['userid']);
-   function gestion_du_contenu_des_inputs() {
+
+     //* NECESSAIRE POUR LA PARTIE ENREGISTREMENT DU PERSONNAGE DANS LA BASE DE DONNES 
+     $user_id = intval($_POST['userid']);
+
+   function gestion_contenu_des_inputs_textes() {
     global $error_nom;
     global $error_origine;
     global $origine_final;
@@ -61,7 +57,7 @@ include './config/connexion_bdd.php';
     $origine_personnage = $_POST['origine'];
     $origine_attendu = array('Eldiens','Mahr','Titans');
 
-    if(preg_match('/[a-z]/',$nom_personnage))
+    if(preg_match('/[A-Z\sa-z]/',$nom_personnage))
       {
         $error_nom = "";
         $nom_final = $nom_personnage;
@@ -69,7 +65,7 @@ include './config/connexion_bdd.php';
 
     else
     {
-      $error_nom = '<p id="error">Merci de ne pas inclure de symboles ou de chiffres mais uniquement des lettres en minuscules</p>';
+      $error_nom = '<p id="error">Merci de ne pas inclure d\'accent ou de chiffres mais uniquement des lettres </p>';
     }
 
     if(in_array($origine_personnage,$origine_attendu))
@@ -85,10 +81,10 @@ include './config/connexion_bdd.php';
 
   }
 
-  gestion_du_contenu_des_inputs();
+  gestion_contenu_des_inputs_textes();
 
 
-    function affiche_une_erreur_dynamique_en_cas_derreur_de_fichier(){
+    function gestion_contenu_fichiers(){
 
       global $error_file_upload;
       global $error_file_upload_2;
@@ -136,11 +132,11 @@ include './config/connexion_bdd.php';
       
     }
 
-    affiche_une_erreur_dynamique_en_cas_derreur_de_fichier();
+    gestion_contenu_fichiers();
 
   //* Enregistrement des éléments dans la base de données
 
-    function enregistrement(){
+    function enregistrement_personnage(){
 
       global $origine_final;
       global $nom_final;
@@ -159,22 +155,14 @@ include './config/connexion_bdd.php';
       $image_histoire_url = "http://localhost/shingeki-no-kyojin/img/$filename_image_histoire_final_result";
 
       if(!empty($nom_final) && !empty($origine_final) && !empty($tmp_nom_0) && !empty($tmp_nom_1) && !empty($filename_image_carte_final_result) && !empty($filename_image_histoire_final_result)){
-        echo 'Oui';
         move_uploaded_file($tmp_nom_0,$destination_image_carte);
         move_uploaded_file($tmp_nom_1,$destination_image_histoire);
         $bdd2->query("INSERT INTO personnages2 (nom,histoire,affiliation,origine,imageCarte,imageHistoire,id_user) VALUES('$nom_final','$histoire','$affiliation','$origine_final','$image_carte_url','$image_histoire_url','$user_id')");
-        // header('location:personnages.php');
+         header('location:personnages.php');
       }
 
-      else{
-        echo 'Echec !';
-      }
-
-   
-
-      
     }
-    enregistrement();
+    enregistrement_personnage();
   }
    ?>
    <div class="container-box">
