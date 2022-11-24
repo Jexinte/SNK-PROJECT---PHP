@@ -34,12 +34,12 @@ include './config/connexion_bdd.php';
      $origine_final = "";
      $nom_final = "";
      $data_personnage = "";
- 
-  
-     $id_personnage = $_GET['id'];
+     
+     
+     $id_personnage = intval($_GET['id']);
      $req = $bdd2->query("SELECT * FROM personnages2 WHERE id = $id_personnage");
      $data_personnage = $req->fetch();
-
+    
     
    if(isset($_POST['submit'])){
 
@@ -85,7 +85,9 @@ include './config/connexion_bdd.php';
       global $error_file_upload;
       global $origine_final;
       global $nom_final;
+      global $id_personnage;
 
+    
       $histoire = $_POST['histoire'];
       $affiliation = $_POST['affiliation'];
 
@@ -107,7 +109,7 @@ include './config/connexion_bdd.php';
           if(!empty($_FILES['imagefile']['name'][$key]))
           {
             //* On vérifie que l'extension des fichiers téléchargés correspondent avec ceux autorisés
-              if(in_array($extension_des_fichiers_telecharges[1],$extensions_autorises) && $nom_final && $histoire && $affiliation)
+              if(in_array($extension_des_fichiers_telecharges[1],$extensions_autorises) || $nom_final || $histoire || $affiliation)
               {
                 $image_carte_file = $_FILES['imagefile']['name'][0];
                 $imageCarte = "http://localhost/shingeki-no-kyojin/img/$image_carte_file";
@@ -118,8 +120,19 @@ include './config/connexion_bdd.php';
                 //? L'objectif maintenant est de trouver le moyen d'effectuer l'enregistrement des donneés une fois les vérifications faites
                 
                       move_uploaded_file($tmp_name,$telechargement_vers_le_dossier_image);
-                      $bdd2->query("INSERT INTO personnages2 (nom,histoire,affiliation,origine,imageCarte,imageHistoire,id_user)  VALUES('$nom_final','$histoire','$affiliation','$origine_final','$imageCarte','$imageHistoire','$userid')");
-                     header('location:personnages.php');
+                      $req2 = $bdd2->prepare("UPDATE personnages2
+                       SET nom = '$nom_final',
+                       histoire = '$histoire', 
+                       affiliation = '$affiliation', 
+                       origine = '$origine_final',
+                       imageCarte = '$imageCarte',
+                       imageHistoire = '$imageHistoire',
+                       id_user ='$userid' WHERE id= $id_personnage"
+                       );
+
+                       $req2->execute();
+                       
+                      header("location:personnage.php?id=$id_personnage");
                     
             
               }
@@ -144,34 +157,34 @@ include './config/connexion_bdd.php';
   <h1>Modification d'un personnage </h1>
   <!-- FORMULAIRE -->
   
-  <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data">
+  <form  method="POST" enctype="multipart/form-data">
 
 
 <label for="nom">
   Nom <br>
-  <input type="text" id="nom" name="nom" value="<?php echo $data_personnage['nom'];?>" required> <br>
+  <input type="text" id="nom" name="nom" value="<?php echo $data_personnage['nom'];?>" > <br>
 </label>
 <?php echo $error_nom; ?> <br>
 
 <label for="histoire">
   Histoire <br>
-  <textarea name="histoire" id="histoire" class="histoire" cols="30" rows="10" value="<?php echo $data_personnage['histoire']; ?>" required></textarea> <br>
+  <textarea name="histoire" id="histoire" class="histoire" cols="30" rows="10" required ><?php echo $data_personnage['histoire'];?></textarea> <br>
 </label>
 
 <label for="affiliation">
   Affiliation <br>
-  <input type="text" id="affiliation" name="affiliation" value="<?php echo $data_personnage['affiliation']; ?>" required><br>
+  <input type="text" id="affiliation" name="affiliation" value="<?php echo $data_personnage['affiliation']; ?>" ><br>
 </label>
 
 <label for="origine">
   Origine <br>
-  <input type="text" id="origine" name="origine" value="<?php echo $data_personnage['origine']; ?>" required><br>
+  <input type="text" id="origine" name="origine" value="<?php echo $data_personnage['origine']; ?>"><br>
 </label>
 <?php echo $error_origine; ?> <br>
 
 <label for="imagecarte">
   ImageCarte<br>
-  <input type="file" id="imagecarte" name="imagefile[]" required><br>
+  <input type="file" id="imagecarte" name="imagefile[]"><br>
   <img id="output1" src="<?php echo $data_personnage['imageCarte']; ?>" height="100" width="100" alt="">
 </label>
 <?php echo $error_file_upload; ?> <br>
@@ -179,7 +192,7 @@ include './config/connexion_bdd.php';
 
 <label for="imagehistoire">
   ImageHistoire<br>
-  <input type="file" id="imagehistoire" name="imagefile[]" required><br>
+  <input type="file" id="imagehistoire" name="imagefile[]" ><br>
   <img id="output2" src="<?php echo $data_personnage['imageHistoire']; ?>" height="100" width="100" alt="">
 </label>
 <?php echo $error_file_upload; ?> <br>
@@ -194,10 +207,7 @@ include './config/connexion_bdd.php';
 </div>
 <?php include './inc/footer_personnages.php'?>
 </div>
-<script>
-  const histoire = document.querySelector('.histoire');
-  histoire.textContent="<?php echo $data_personnage['histoire'] ?>";
-</script>
+
 
 <style>
 .container-box

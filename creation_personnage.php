@@ -10,6 +10,7 @@
 <body>
 <?php
 
+
 include './config/connexion_bdd2.php';
 include './config/connexion_bdd.php';
 
@@ -30,12 +31,26 @@ include './config/connexion_bdd.php';
    <?php 
 
      $error_file_upload = "";
+     $error_file_upload_2 = "";
      $error_nom = $error_origine = "";
      $origine_final = "";
      $nom_final = "";
-    
-   if(isset($_POST['submit'])){
-
+     
+     //* FILES NAME
+     //  $tmp_nom_image_carte = $tmp_nom_image_histoire = "";
+     $filename_image_carte_final_result = $filename_image_histoire_final_result = "";
+     
+     //* TMP NAME
+     $tmp_nom_0 = $tmp_nom_1 = "";
+     
+     //  $destination_image_carte = "img/$filename_img_carte";
+     //  $destination_image_histoire = "img/$filename_img_carte";
+     
+     $destination_image_carte =  $destination_image_histoire = "";
+     
+     if(isset($_POST['submit'])){
+       
+       $user_id = intval($_POST['userid']);
    function gestion_du_contenu_des_inputs() {
     global $error_nom;
     global $error_origine;
@@ -71,67 +86,96 @@ include './config/connexion_bdd.php';
   }
 
   gestion_du_contenu_des_inputs();
-   //* Permet le téléchargement de plusieurs fichiers
-    function derniere_verification_puis_insertion_des_donnees()
-    {
-      global $bdd2; 
+
+
+    function affiche_une_erreur_dynamique_en_cas_derreur_de_fichier(){
+
       global $error_file_upload;
+      global $error_file_upload_2;
+      global $filename_image_carte_final_result;
+      global $filename_image_histoire_final_result;
+      global $destination_image_carte;
+      global $destination_image_histoire;
+      global $tmp_nom_0;
+      global $tmp_nom_1;
+
+     //* 1 - On récupère les valeurs des inputs
+      $filename_image_carte = $_FILES['imagefile']['name'][0];
+      $filename_image_histoire = $_FILES['imagefile']['name'][1];
+    
+    //* 2 - Récupération de l'extension des fichiers téléchargés
+      $explode_sur_filename_image_carte = explode('.',$filename_image_carte);
+      $explode_sur_filename_image_histoire = explode('.',$filename_image_histoire);
+   
+    //* Processus de vérification
+      
+      $extensions_autorises = array('png','webp','jpg','jpeg');
+      if(!in_array($explode_sur_filename_image_carte[1],$extensions_autorises)){
+        $error_file_upload = '<p id="error">Merci de vérifier que votre image contient bien l\'une des extensions suivantes : png,webp,jpg,jpeg</p> ';
+      }
+
+      else {
+        $error_file_upload = "";
+        $filename_image_carte_final_result = $filename_image_carte;
+        $tmp_nom_0 = $_FILES['imagefile']['tmp_name'][0];
+        $destination_image_carte = "img/$filename_image_carte_final_result"; 
+       
+      }
+
+      if(!in_array($explode_sur_filename_image_histoire[1],$extensions_autorises)){
+        $error_file_upload_2 = '<p id="error">Merci de vérifier que votre image contient bien l\'une des extensions suivantes : png,webp,jpg,jpeg</p> ';
+      }
+      
+      else{
+        $filename_image_histoire_final_result = $filename_image_histoire;
+        $tmp_nom_1 = $_FILES['imagefile']['tmp_name'][1];
+        $destination_image_histoire = "img/$filename_image_histoire_final_result"; 
+        $error_file_upload_2 = "";
+      }
+
+      
+    }
+
+    affiche_une_erreur_dynamique_en_cas_derreur_de_fichier();
+
+  //* Enregistrement des éléments dans la base de données
+
+    function enregistrement(){
+
       global $origine_final;
       global $nom_final;
+      global $tmp_nom_0;
+      global $tmp_nom_1;
+      global $destination_image_carte;
+      global $destination_image_histoire;
+      global $filename_image_carte_final_result;
+      global $filename_image_histoire_final_result;
+      global $user_id;
+      global $bdd2;
 
       $histoire = $_POST['histoire'];
       $affiliation = $_POST['affiliation'];
+      $image_carte_url = "http://localhost/shingeki-no-kyojin/img/$filename_image_carte_final_result";
+      $image_histoire_url = "http://localhost/shingeki-no-kyojin/img/$filename_image_histoire_final_result";
 
-      foreach($_FILES['imagefile']["error"] as $key => $error)
-      {
-        //* Si aucune erreur d'envoi via la méthode post
-        if($error == UPLOAD_ERR_OK)
-        {
-          // * On récupère le nom des fichiers temporairement sauvegardés côtés serveur pour plus tard
-          $tmp_name = $_FILES['imagefile']["tmp_name"][$key];
-          $nom_des_fichiers = $_FILES['imagefile']["name"][$key];
-
-          $telechargement_vers_le_dossier_image = "img/$nom_des_fichiers";
-
-          $extensions_autorises = array('png','webp','jpg','jpeg','svg');
-          $extension_des_fichiers_telecharges = explode('.',$nom_des_fichiers);
-          
-          //* Si les fichiers sont bien envoyés
-          if(!empty($_FILES['imagefile']['name'][$key]))
-          {
-            //* On vérifie que l'extension des fichiers téléchargés correspondent avec ceux autorisés
-              if(in_array($extension_des_fichiers_telecharges[1],$extensions_autorises) && $nom_final && $histoire && $affiliation)
-              {
-                $image_carte_file = $_FILES['imagefile']['name'][0];
-                $imageCarte = "http://localhost/shingeki-no-kyojin/img/$image_carte_file";
-                $image_histoire_file = $_FILES['imagefile']['name'][1];
-                $imageHistoire = "http://localhost/shingeki-no-kyojin/img/$image_histoire_file";
-                $userid = intval($_POST['userid']);
-            
-                //? L'objectif maintenant est de trouver le moyen d'effectuer l'enregistrement des donneés une fois les vérifications faites
-                
-                      move_uploaded_file($tmp_name,$telechargement_vers_le_dossier_image);
-                      $bdd2->query("INSERT INTO personnages2 (nom,histoire,affiliation,origine,imageCarte,imageHistoire,id_user)  VALUES('$nom_final','$histoire','$affiliation','$origine_final','$imageCarte','$imageHistoire','$userid')");
-                     header('location:personnages.php');
-                    
-            
-              }
-      
-              else
-                $error_file_upload = '<p id="error">Merci de vérifier que votre image contient bien l\'une des extensions suivantes : png,webp,jpg,jpeg</p> ';
-              
-          }
-         
-         
-        }
-
+      if(!empty($nom_final) && !empty($origine_final) && !empty($tmp_nom_0) && !empty($tmp_nom_1) && !empty($filename_image_carte_final_result) && !empty($filename_image_histoire_final_result)){
+        echo 'Oui';
+        move_uploaded_file($tmp_nom_0,$destination_image_carte);
+        move_uploaded_file($tmp_nom_1,$destination_image_histoire);
+        $bdd2->query("INSERT INTO personnages2 (nom,histoire,affiliation,origine,imageCarte,imageHistoire,id_user) VALUES('$nom_final','$histoire','$affiliation','$origine_final','$image_carte_url','$image_histoire_url','$user_id')");
+        // header('location:personnages.php');
       }
 
+      else{
+        echo 'Echec !';
+      }
 
-  }
-   derniere_verification_puis_insertion_des_donnees();
+   
+
+      
     }
-
+    enregistrement();
+  }
    ?>
    <div class="container-box">
   <h1>Création d'un personnage </h1>
@@ -173,7 +217,7 @@ include './config/connexion_bdd.php';
   ImageHistoire<br>
   <input type="file" id="imagehistoire" name="imagefile[]" required><br>
 </label>
-<?php echo $error_file_upload; ?> <br>
+<?php echo $error_file_upload_2; ?> <br>
 <?php   ?>
 <label for="iduser">
   <input type="text" value="<?php echo $_COOKIE['userid']?>" name="userid" hidden>  <br>
