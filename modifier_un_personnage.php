@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,111 +75,117 @@ include './config/connexion_bdd.php';
       $valeur_image_carte_apres_verification= $valeur_image_histoire_apres_verification = "";
 
       //* À partir d'ici la logique de vérification des inputs files à été découper en plusieurs fonctions afin d'éviter trop de répétitions 
-      function si_les_inputs_file_sont_vides(){
+      function si_les_inputs_files_sont_vides()
+      {
 
         global $bdd2;
         global $valeur_image_carte_apres_verification;
         global $valeur_image_histoire_apres_verification;
         global $id_personnage;
 
-        $filenameCarte = $_FILES['imagefile']['name'][0];
-        $filenameHistoire = $_FILES['imagefile']['name'][1];
 
-        //* Récupère les valeurs existantes pour les réinsérer si aucun nouveau fichier n'est téléchargé
-        if(empty($filenameCarte) && empty($filenameHistoire)):
-          $req = $bdd2->query("SELECT imageCarte,imageHistoire from personnages2 WHERE id = $id_personnage");
-          $data = $req->fetch();
-          $valeur_image_carte_apres_verification = $data['imageCarte'];
-          $valeur_image_histoire_apres_verification = $data['imageHistoire'];
-        endif;
+        foreach($_FILES['imagefile']['name'] as $file){
+          if(empty($file)):
+            $req = $bdd2->query("SELECT imageCarte , imageHistoire from personnages2 WHERE id = $id_personnage");
+            $data = $req->fetch();
+            $valeur_image_carte_apres_verification = $data[0];
+            $valeur_image_histoire_apres_verification = $data[1];
+          endif;
+        }
          
       }
 
-      si_les_inputs_file_sont_vides();
+      si_les_inputs_files_sont_vides();
 
-     
-      function si_image_carte_ne_change_pas_mais_que_image_histoire_change()
-      {
+      function image_carte_à_une_valeur_mais_image_histoire_non(){
+        global $valeur_image_carte_apres_verification;
+        global $error_file_upload;
         global $bdd2;
-        global $error_file_upload2;
         global $id_personnage;
-        global $valeur_image_histoire_apres_verification;
+
+        $filename_carte = "";
+        $tmp_carte = "";
+        $extensions_autorisés = array('jpg','png','webp','jpeg');
+        $extension_du_fichier_telechargé = "";
+        $dossier_img = "img/";
+
+        $req = $bdd2->query("SELECT imageCarte from personnages2 WHERE id = $id_personnage");
+        $data = $req->fetch();
+        $traitement_nom_image_carte_dans_la_bdd = explode('/',$data[0]);
+        $nom_image_carte_dans_la_bdd = $traitement_nom_image_carte_dans_la_bdd[5];
         
-        
-        //* Emplacement du dossier image
-        $dir = "img";
-        
-        //* La méthode scandir permet de récupérer le contenu du dossier img sous forme de tableau et array_diff retire la ponctuation inutile rajouté par scandir dans ce cas là 
-        $files = array_diff(scandir($dir),array('..','.'));
-        
-        $filenameCarte = $_FILES['imagefile']['name'][0];
-        $filenameHistoire = $_FILES['imagefile']['name'][1];
-        $extensions_autorises = array('jpg','jpeg','png','webp');
-        $destination_imageHistoire = "img/$filenameHistoire";
-
-         //* Si un fichier est pris en compte via le champ "ImageHistoire"
-         if(empty($filenameCarte) && $filenameHistoire):
-
-          $tmp_name_histoire = $_FILES['imagefile']['tmp_name'][1];
-
-          $extension_du_fichier_telecharge = explode('.',$filenameHistoire);
-   
-            //* Vérifie que l'extension du fichier est la bonne
-             if(in_array($extension_du_fichier_telecharge[1],$extensions_autorises))
-             {
-
-              //* Récupération du nom de l'image dans le bon champ
-              $req = $bdd2->query("SELECT imageHistoire from personnages2 WHERE id = $id_personnage");
-              $data = $req->fetch();
-
-              //* Récupération du nom de l'image avec son extension sans l'adresse http...
-              $nom_du_fichier_dans_la_bdd =  explode('/',$data['imageHistoire']);
-              
-              //* On vérifie que le nom de l'image dans la bdd correspond avec celui dans le dossier img
-                foreach($files as $nom_du_fichier_histoire_dans_le_dossier_image_a_supprimer_en_cas_de_correspondance)
-                {
-                  //* En cas de correspondance on supprime l'image du dossier et on enregistre la nouvelle dont le nom sera sauvegardé dans une variable qui servira pour la mise à jour
-                  if($nom_du_fichier_histoire_dans_le_dossier_image_a_supprimer_en_cas_de_correspondance === $nom_du_fichier_dans_la_bdd[5]):
-       
-                        //* On supprime l'ancien fichier et sauvegarde le nouveau
-                     unlink("$dir/$nom_du_fichier_histoire_dans_le_dossier_image_a_supprimer_en_cas_de_correspondance");
-                     
-                  else : 
-                      move_uploaded_file($tmp_name_histoire,$destination_imageHistoire);
-                      $valeur_image_histoire_apres_verification = "http://localhost/shingeki-no-kyojin/img/$filenameHistoire";
-                        header('location:personnages.php');
-                 
-                  endif;
-              
-                }
-
-              }
-
-               else 
-               {
-                 $error_file_upload2 = '<p id="error">Merci de vérifier que votre image contient bien l\'une des extensions suivantes : png,webp,jpg,jpeg</p> ';
-               }
-               
+        foreach($_FILES['imagefile']['error'] as $key =>  $error):
+          if(UPLOAD_ERR_OK == $error): 
+            $filename_carte = $_FILES['imagefile']['name'][$key];
+            $tmp_carte = $_FILES['imagefile']['tmp_name'][$key];
          
-         endif;
-       
-      }
+          endif;
 
-      si_image_carte_ne_change_pas_mais_que_image_histoire_change();
-//? Les fonctions fonctionnent correctement mais d'autres test devront être effectué à nouveau !
+
+          $extension_du_fichier_telechargé = explode('.',$filename_carte);
+        endforeach;
+
+        //* Si la vérification n'a pu se faire alors aucun fichier n'est téléchargé
+        if(!empty($extension_du_fichier_telechargé[0]))
+        {
+
+          if(in_array($extension_du_fichier_telechargé[1],$extensions_autorisés))
+          {
+            
+            if($handle = opendir($dossier_img)): 
+              
+              //* Si le dossier est accessible alors on peut effectuer le traitement que l'on souhaite sur le dossier
+            while(false !== ($nom_du_fichier_dans_le_dossier_image = readdir($handle))):
+                
+                if($nom_du_fichier_dans_le_dossier_image != "." && $nom_du_fichier_dans_le_dossier_image != ".."):
+                  if($nom_du_fichier_dans_le_dossier_image === $nom_image_carte_dans_la_bdd){
+                    unlink("$dossier_img/$nom_du_fichier_dans_le_dossier_image");
+                    move_uploaded_file($tmp_carte,"$dossier_img/$filename_carte");
+                    $valeur_image_carte_apres_verification = "http://localhost/shingeki-no-kyojin/img/$filename_carte";
+                    }  
+                    
+                  endif;
+            endwhile;
+            closedir($handle);
+            
+          endif;
+          
+        }
+
+        else{
+          $error_file_upload = '<p id="error">Merci de vérifier que votre image contient bien l\'une des extensions suivantes : png,webp,jpg,jpeg</p> ';
+        }
+      
+    }
+
+    }
+      image_carte_à_une_valeur_mais_image_histoire_non();
+
       function testUpdate() {
         global $valeur_image_carte_apres_verification;
         global $valeur_image_histoire_apres_verification;
         global $nom_final;
         global $origine_final;
-        echo var_dump($valeur_image_histoire_apres_verification).'<br>';
-        echo $valeur_image_carte_apres_verification;
+        global $id_personnage;
+        global $bdd2;
+        $histoire = $_POST['histoire'];
+        $affiliation = $_POST['affiliation'];
+        $id_user = intval($_COOKIE['userid']);
+        
+        $req = $bdd2->query("UPDATE personnages2 SET nom = '$nom_final',histoire = '$histoire',affiliation = '$affiliation',origine = '$origine_final',imageCarte = '$valeur_image_carte_apres_verification',imageHistoire='$valeur_image_histoire_apres_verification' WHERE id=$id_personnage");
+        $req->execute();
       }
 
       testUpdate();
 
       
     }
+
+
+     //? La matinée du 26 a permis de remarquer que des erreurs était générés du coup j'ai préféré supprimer les fonctions et je vais les réecrire en incluant plus de paramètre
+
+      
+    
 
 
    ?>
