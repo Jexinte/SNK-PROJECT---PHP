@@ -74,8 +74,10 @@ include './config/connexion_bdd.php';
 
       $valeur_image_carte_apres_verification = $valeur_image_histoire_apres_verification = "";
 
-      //* À partir d'ici la logique de vérification des inputs files à été découper en plusieurs fonctions afin d'éviter trop de répétitions 
-      function si_les_inputs_files_sont_vides()
+//* À partir d'ici la logique de vérification des inputs files à été découper en plusieurs fonctions afin d'éviter trop de répétitions 
+
+      //* Les inputs ne contiennent pas de nouvelles images
+      function si_les_images_ne_changent_pas()
       {
 
         global $bdd2;
@@ -84,183 +86,177 @@ include './config/connexion_bdd.php';
         global $id_personnage;
 
 
-        foreach($_FILES['imagefile']['name'] as $file){
+        foreach($_FILES['imagefile']['name'] as $file):
           if(empty($file)):
             $req = $bdd2->query("SELECT imageCarte , imageHistoire from personnages2 WHERE id = $id_personnage");
             $data = $req->fetch();
             $valeur_image_carte_apres_verification = $data[0];
             $valeur_image_histoire_apres_verification = $data[1];
           endif;
-        }
-         
-      }
-
-      si_les_inputs_files_sont_vides();
-
-    //   function image_carte_à_une_valeur_mais_image_histoire_non(){
-    //     global $valeur_image_carte_apres_verification;
-    //     global $error_file_upload;
-    //     global $bdd2;
-    //     global $id_personnage;
-
-    //     $filename_carte = "";
-    //     $tmp_carte = "";
-    //     $extensions_autorisés = array('jpg','png','webp','jpeg');
-    //     $extension_du_fichier_telechargé = "";
-    //     $dossier_img = "img/";
-
-    //     $req = $bdd2->query("SELECT imageCarte from personnages2 WHERE id = $id_personnage");
-    //     $data = $req->fetch();
-    //     $traitement_nom_image_carte_dans_la_bdd = explode('/',$data[0]);
-    //     $nom_image_carte_dans_la_bdd = $traitement_nom_image_carte_dans_la_bdd[5];
-        
-    //     foreach($_FILES['imagefile']['error'] as $key =>  $error):
-    //       if(UPLOAD_ERR_OK == $error): 
-    //         $filename_carte = $_FILES['imagefile']['name'][$key];
-    //         $tmp_carte = $_FILES['imagefile']['tmp_name'][$key];
-         
-    //       endif;
-
-
-    //       $extension_du_fichier_telechargé = explode('.',$filename_carte);
-    //     endforeach;
-
-    //     //* Si la vérification n'a pu se faire alors aucun fichier n'est téléchargé
-    //     if(!empty($extension_du_fichier_telechargé[0]))
-    //     {
-
-    //       if(in_array($extension_du_fichier_telechargé[1],$extensions_autorisés))
-    //       {
-            
-    //         if($handle = opendir($dossier_img)): 
-              
-    //           //* Si le dossier est accessible alors on peut effectuer le traitement que l'on souhaite sur le dossier
-    //         while(false !== ($nom_du_fichier_dans_le_dossier_image = readdir($handle))):
-                
-    //             if($nom_du_fichier_dans_le_dossier_image != "." && $nom_du_fichier_dans_le_dossier_image != ".."):
-    //               if($nom_du_fichier_dans_le_dossier_image === $nom_image_carte_dans_la_bdd){
-    //                 unlink("$dossier_img/$nom_du_fichier_dans_le_dossier_image");
-    //                 move_uploaded_file($tmp_carte,"$dossier_img/$filename_carte");
-    //                 $valeur_image_carte_apres_verification = "http://localhost/shingeki-no-kyojin/img/$filename_carte";
-    //                 $error_file_upload = "";
-    //                 }  
-                    
-    //               endif;
-    //         endwhile;
-    //         closedir($handle);
-            
-    //       endif;
-          
-    //     }
-
-    //     else{
-    //       $error_file_upload = '<p id="error">Merci de vérifier que votre image contient bien l\'une des extensions suivantes : png,webp,jpg,jpeg</p> ';
-    //     }
-      
-    // }
-
-    // }
-    //   image_carte_à_une_valeur_mais_image_histoire_non();
-
-      function image_histoire_à_une_valeur_mais_image_carte_non(){
-        global $valeur_image_histoire_apres_verification;
-        global $error_file_upload2;
-        global $bdd2;
-        global $id_personnage;
-
-        $filename_histoire = "";
-        $tmp_histoire = "";
-        $extensions_autorisés2 = array('jpg','png','webp','jpeg');
-        $extension_du_fichier_telechargé2 = "";
-        $dossier_img2 = "img/";
-
-        $req = $bdd2->query("SELECT imageHistoire from personnages2 WHERE id = $id_personnage");
-        $data = $req->fetch();
-        $traitement_nom_image_histoire_dans_la_bdd = explode('/',$data[0]);
-        $nom_image_histoire_dans_la_bdd = $traitement_nom_image_histoire_dans_la_bdd[5];
-    
-        
-        foreach($_FILES['imagefile']['error'] as $key =>  $error2):
-          if(UPLOAD_ERR_OK == $error2): 
-            $filename_histoire = $_FILES['imagefile']['name'][$key];
-            $tmp_histoire = $_FILES['imagefile']['tmp_name'][$key];
-            // if($_FILES['imagefile']['name'][$key] === 0 ) {
-              print($_FILES['imagefile']['name'][$key]);
-            // }
-          endif;
-
-
-          $extension_du_fichier_telechargé2 = explode('.',$filename_histoire);
         endforeach;
-
-        //* Si la vérification n'a pu se faire alors aucun fichier n'est téléchargé
-        if(!empty($extension_du_fichier_telechargé2[0]))
-        {
-
-          if(in_array($extension_du_fichier_telechargé2[1],$extensions_autorisés2))
-          {
-            
-            if($handle2 = opendir($dossier_img2)): 
-              
-              //* Si le dossier est accessible alors on peut effectuer le traitement que l'on souhaite sur le dossier
-            while(false !== ($nom_du_fichier_dans_le_dossier_image2 = readdir($handle2))):
-                
-                if($nom_du_fichier_dans_le_dossier_image2 != "." && $nom_du_fichier_dans_le_dossier_image2 != ".."):
-                  if($nom_du_fichier_dans_le_dossier_image2 === $nom_image_histoire_dans_la_bdd){
-                    unlink("$dossier_img2/$nom_du_fichier_dans_le_dossier_image2");
-                    move_uploaded_file($tmp_histoire,"$dossier_img2/$filename_histoire");
-                    $valeur_image_histoire_apres_verification = "http://localhost/shingeki-no-kyojin/img/$filename_histoire";
-                    $error_file_upload2 = "";
-                    }  
-                    
-                  endif;
-            endwhile;
-            closedir($handle2);
-            
-          endif;
-          
-        }
-
-        else{
-          $error_file_upload2 = '<p id="error">Merci de vérifier que votre image contient bien l\'une des extensions suivantes : png,webp,jpg,jpeg</p> ';
-        }
-      
-    }
-
-    }
-    image_histoire_à_une_valeur_mais_image_carte_non();
-
-
-      function testUpdate() {
-        global $valeur_image_carte_apres_verification;
-        global $valeur_image_histoire_apres_verification;
-        global $nom_final;
-        global $origine_final;
-        global $id_personnage;
-        global $bdd2;
-        $histoire = $_POST['histoire'];
-        $affiliation = $_POST['affiliation'];
-        $id_user = intval($_COOKIE['userid']);
-        
-        $req = $bdd2->query("UPDATE personnages2 SET nom = '$nom_final',histoire = '$histoire',affiliation = '$affiliation',origine = '$origine_final',imageCarte = '$valeur_image_carte_apres_verification',imageHistoire='$valeur_image_histoire_apres_verification' WHERE id=$id_personnage");
-        $req->execute();
+         
       }
 
-      testUpdate();
+      si_les_images_ne_changent_pas();
+
+       function si_image_carte_à_une_nouvelle_image(){
+         global $valeur_image_carte_apres_verification;
+         global $error_file_upload;
+         global $bdd2;
+         global $id_personnage;
+
+         $filename_carte = "";
+         $tmp_carte = "";
+         $extensions_autorisés = array('jpg','png','webp','jpeg','PNG');
+         $extension_du_fichier_telechargé = "";
+         $dossier_img = "img/";
+
+         $req = $bdd2->query("SELECT imageCarte from personnages2 WHERE id = $id_personnage");
+         $data = $req->fetch();
+         
+         $traitement_nom_image_carte_dans_la_bdd = explode('/',$data[0]);
+         $nom_image_carte_dans_la_bdd = $traitement_nom_image_carte_dans_la_bdd[5];
+        
+          $filename_carte = $_FILES['imagefile']['name'][0];
+          $tmp_carte = $_FILES['imagefile']['tmp_name'][0];
+          $extension_du_fichier_telechargé = explode('.',$filename_carte);
+        
+
+         //* Si le nom du fichier est présent alors on procède à la vérification de son extension plus bas et des vérifications plus poussées par la suite
+         if(!empty($extension_du_fichier_telechargé[0])):
+         
+              if(in_array($extension_du_fichier_telechargé[1],$extensions_autorisés))
+              {
+                
+                if($handle = opendir($dossier_img)): 
+                  
+                  //* Si le dossier est accessible alors on peut effectuer le traitement que l'on souhaite sur le dossier
+                while(false !== ($nom_du_fichier_dans_le_dossier_image = readdir($handle))):
+                    
+                    if($nom_du_fichier_dans_le_dossier_image != "." && $nom_du_fichier_dans_le_dossier_image != ".."):
+
+                        if($nom_du_fichier_dans_le_dossier_image === $nom_image_carte_dans_la_bdd):
+
+                            unlink("$dossier_img/$nom_du_fichier_dans_le_dossier_image"); //* Suppression du fichier
+                            move_uploaded_file($tmp_carte,"$dossier_img/$filename_carte"); //* Téléchargement du nouveau fichier
+                            $valeur_image_carte_apres_verification = "http://localhost/shingeki-no-kyojin/img/$filename_carte"; //* Assignation du nom du nouveau fichier à sauvegarder dans la bdd
+                            $error_file_upload = "";
+
+                          endif;
+                        
+                      endif;
+                endwhile;
+                closedir($handle);
+                
+              endif;
+              
+            }
+
+            else{
+              $error_file_upload = '<p id="error">Merci de vérifier que votre image contient bien l\'une des extensions suivantes : png,webp,jpg,jpeg</p> ';
+            }
+      
+        endif;
+
+     }
+     si_image_carte_à_une_nouvelle_image();
+
+       function si_image_histoire_à_une_nouvelle_image(){
+         global $valeur_image_histoire_apres_verification;
+         global $error_file_upload2;
+         global $bdd2;
+         global $id_personnage;
+
+         $filename_histoire = "";
+         $tmp_histoire = "";
+         $extensions_autorisés = array('jpg','png','webp','jpeg');
+         $extension_du_fichier_telechargé = "";
+         $dossier_img= "img/";
+
+         $req = $bdd2->query("SELECT imageHistoire from personnages2 WHERE id = $id_personnage");
+         $data = $req->fetch();
+      
+         $traitement_nom_image_histoire_dans_la_bdd = explode('/',$data[0]);
+         $nom_image_histoire_dans_la_bdd = $traitement_nom_image_histoire_dans_la_bdd[5];
+      
+         $filename_histoire = $_FILES['imagefile']['name'][1];
+         $tmp_histoire = $_FILES['imagefile']['tmp_name'][1];
+
+         $extension_du_fichier_telechargé = explode('.',$filename_histoire);
+     
+  
+         //* Si le nom du fichier est présent alors on procède à la vérification de son extension plus bas et des vérifications plus poussées par la suite
+         if(!empty($extension_du_fichier_telechargé[0])):
+         
+
+            if(in_array($extension_du_fichier_telechargé[1],$extensions_autorisés))
+            {
+              
+              if($handle = opendir($dossier_img)): 
+                
+                //* Si le dossier est accessible alors on peut effectuer le traitement que l'on souhaite sur le dossier
+              while(false !== ($nom_du_fichier_dans_le_dossier_image = readdir($handle))):
+                  
+                  if($nom_du_fichier_dans_le_dossier_image != "." && $nom_du_fichier_dans_le_dossier_image != ".."):
+
+                      if($nom_du_fichier_dans_le_dossier_image === $nom_image_histoire_dans_la_bdd):
+                          unlink("$dossier_img/$nom_du_fichier_dans_le_dossier_image");  //* Suppression du fichier
+                          move_uploaded_file($tmp_histoire,"$dossier_img/$filename_histoire");//* Téléchargement du nouveau fichier
+                          $valeur_image_histoire_apres_verification = "http://localhost/shingeki-no-kyojin/img/$filename_histoire";//* Assignation du nom du nouveau fichier à sauvegarder dans la bdd
+                          $error_file_upload2 = "";
+                         
+                      endif;
+ 
+                    endif;
+              endwhile;
+              closedir($handle);
+              
+            endif;
+            
+          }
+
+          else{
+            $error_file_upload2 = '<p id="error">Merci de vérifier que votre image contient bien l\'une des extensions suivantes : png,webp,jpg,jpeg</p> ';
+          }
+      
+        endif;
+
+     }
+     si_image_histoire_à_une_nouvelle_image();
+     
+
+
+    
+      function mis_à_jour_des_donnees()
+      {
+          global $valeur_image_carte_apres_verification;
+          global $valeur_image_histoire_apres_verification;
+          global $nom_final;
+          global $origine_final;
+          global $id_personnage;
+          global $bdd2;
+
+          $histoire = $_POST['histoire'];
+          $affiliation = $_POST['affiliation'];
+          
+          $req = $bdd2->query("UPDATE personnages2 SET nom = '$nom_final',histoire = '$histoire',affiliation = '$affiliation',origine = '$origine_final',imageCarte = '$valeur_image_carte_apres_verification',imageHistoire='$valeur_image_histoire_apres_verification' WHERE id=$id_personnage");
+          $req->execute();
+
+      }
+
+      mis_à_jour_des_donnees();
 
       
     }
 
 
-     //? La matinée du 26 a permis de remarquer que des erreurs était générés du coup j'ai préféré supprimer les fonctions et je vais les réecrire en incluant plus de paramètre
-
-      
     
 
 
    ?>
    <div class="container-box">
   <h1>Modification d'un personnage </h1>
+  
   <!-- FORMULAIRE -->
   
   <form  method="POST" enctype="multipart/form-data">
