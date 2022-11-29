@@ -1,116 +1,116 @@
 <?php
 
- include './config/connexion_bdd2.php';
+include './config/connexion_bdd2.php';
 include './config/connexion_bdd.php';
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Personnages</title>
 </head>
+
 <body>
   <div class="container">
     <!-- HEADER -->
-    <?php include './inc/menu_personnages.php';?>
+    <?php include './inc/menu_personnages.php'; ?>
 
     <div class="container-box">
 
-      <?php 
-    
-    $recuperation_image = $bdd2->query('SELECT * FROM personnages2 ORDER BY nom');
-    
-    while($data = $recuperation_image->fetch()):
+      <?php
+
+      $recuperation_image = $bdd2->query('SELECT * FROM personnages2 ORDER BY nom');
+
+      while ($data = $recuperation_image->fetch()) :
       ?>
 
-    <a href="personnage.php?id=<?php echo $data['id']?>" class="box"> 
+        <a href="personnage.php?id=<?php echo $data['id'] ?>" class="box">
 
-      <?php  if($data['origine'] === "Eldiens"): ?>
-      <span class="nom" id="eldiens-nom"><?php echo $data['nom'];?></span>
-      <?php endif;?>
+          <?php if ($data['origine'] === "Eldiens") : ?>
+            <span class="nom" id="eldiens-nom"><?php echo $data['nom']; ?></span>
+          <?php endif; ?>
 
-      <?php  if($data['origine'] === "Mahr"): ?>
-      <span class="nom" id="mahr-nom"><?php echo $data['nom'];?></span>
-      <?php endif;?>
+          <?php if ($data['origine'] === "Mahr") : ?>
+            <span class="nom" id="mahr-nom"><?php echo $data['nom']; ?></span>
+          <?php endif; ?>
 
-      <?php  if($data['origine'] === "Titans"): ?>
-      <span class="nom" id="titans-nom"><?php echo $data['nom'];?></span>
-      <?php endif;?>
+          <?php if ($data['origine'] === "Titans") : ?>
+            <span class="nom" id="titans-nom"><?php echo $data['nom']; ?></span>
+          <?php endif; ?>
 
-      <img class="imagecarte" src="<?php echo $data['imageCarte'] ?>" alt="" width="100" height="100" >
+          <img class="imagecarte" src="<?php echo $data['imageCarte'] ?>" alt="" width="100" height="100">
 
-    </a>
+        </a>
 
-    <?php endwhile; ?>
+      <?php endwhile; ?>
+    </div>
+
+    <?php include './inc/footer_personnages.php' ?>
+
   </div>
-
-  <?php include './inc/footer_personnages.php'?>
-
-  </div>
-<?php 
+  <?php
 
 
-?>
+  ?>
 
   <style>
+    #eldiens-nom {
+      color: #8c6f1d;
+    }
 
-    
-   
+    #mahr-nom {
+      color: #d54324;
+    }
 
-#eldiens-nom{
-  color:#8c6f1d;
-}
-#mahr-nom{
-  color:#d54324;
-}
+    #titans-nom {
+      color: gray;
+    }
 
-#titans-nom{
-  color:gray;
-}
-.container-box
-{
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2em;
-  justify-content: center;
-  transition: all ease-in 700ms;
-  margin-bottom: 4em;
-}
+    .container-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2em;
+      justify-content: center;
+      transition: all ease-in 700ms;
+      margin-bottom: 4em;
+    }
 
-header{
-  margin-bottom: 8em;
-}
+    header {
+      margin-bottom: 8em;
+    }
 
-.box{
-  box-shadow: 5px 5px 10px rgba(0,0,0,.5);
-  height: 300px;
-  width: 300px;
-  border-radius: 20px;
-  position: relative;
-}
+    .box {
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, .5);
+      height: 300px;
+      width: 300px;
+      border-radius: 20px;
+      position: relative;
+    }
 
-.nom{
-position: absolute;
-font-size: .7em;
-color: black;
-background: white;
-width: 100%;
-text-align: center;
-bottom: 0;
-border-bottom-right-radius: 20px;
-border-bottom-left-radius: 20px;
-padding: .5em;
-}
+    .nom {
+      position: absolute;
+      font-size: .7em;
+      color: black;
+      background: white;
+      width: 100%;
+      text-align: center;
+      bottom: 0;
+      border-bottom-right-radius: 20px;
+      border-bottom-left-radius: 20px;
+      padding: .5em;
+    }
 
-.box img{
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: 20px;
-}
+    .box img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+    }
   </style>
 </body>
+
 </html>

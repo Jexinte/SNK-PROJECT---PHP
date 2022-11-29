@@ -9,71 +9,74 @@
 </header>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
-* {
-  margin:0;
-  padding:0;
-  box-sizing: border-box;
-}
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
 
-body{
-  font-family:'Fredoka One';
-}
-  a{
-    color:black;
-    font-weight:600;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Fredoka One';
+  }
+
+  a {
+    color: black;
+    font-weight: 600;
     text-decoration: none;
     font-size: 1.5em;
   }
 
-  a:visited{
-    color:black;
+  a:visited {
+    color: black;
   }
 
-  header{
-    box-shadow: 5px 5px 10px rgba(0,0,0,.2);
+  header {
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, .2);
     width: 100%;
-    padding-top:1em;
+    padding-top: 1em;
   }
+
   nav {
     display: flex;
     justify-content: space-around;
   }
 
-  nav #eldiens,#mahr,#titans,#creation {
+  nav #eldiens,
+  #mahr,
+  #titans,
+  #creation {
     position: relative;
-    top:.7em;
+    top: .7em;
   }
 
   #eldiens {
-    color:#8c6f1d;
+    color: #8c6f1d;
   }
 
-  #mahr{
-    color:#d54324;
+  #mahr {
+    color: #d54324;
   }
 
-  #titans{
-    color:gray;
+  #titans {
+    color: gray;
   }
 
   @media screen and (max-width:992px) {
-  
-    header{
+
+    header {
       padding-bottom: 4em;
-  transition: padding-bottom ease-in 700ms;
-}
+      transition: padding-bottom ease-in 700ms;
+    }
 
-nav {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5em;
-  transition: all ease-in 700ms;
-}
+    nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5em;
+      transition: all ease-in 700ms;
+    }
 
-}
-
-
+  }
 </style>
-

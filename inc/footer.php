@@ -3,19 +3,18 @@
 </footer>
 
 <style>
+  footer {
+    background: transparent;
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    padding: 2em;
+  }
 
-footer{
-  background: transparent;
-width: 100%;
-text-align: center;
-position: absolute;
-bottom: 0;
-padding: 2em;
-}
-
-.footer-paragraph{
-  font-weight: 600;
+  .footer-paragraph {
+    font-weight: 600;
 
 
-}
+  }
 </style>

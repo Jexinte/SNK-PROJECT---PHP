@@ -5,20 +5,18 @@
 </header>
 
 <style>
-
-  .header{
+  .header {
     position: absolute;
-top: 2em;
-right: 6em;
+    top: 2em;
+    right: 6em;
   }
 
-  a{
-  color: black;
-text-decoration: none;
-}
+  a {
+    color: black;
+    text-decoration: none;
+  }
 
-a:visited{
-  color:black;
-}
-
+  a:visited {
+    color: black;
+  }
 </style>

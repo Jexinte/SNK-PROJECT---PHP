@@ -1,35 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
-:root{
+
+:root {
 
   /* FONTS */
-    --fredokaOne : 'Fredoka One';
-    --400 : 400;
-    --600 : 600;
-    --800 : 800;
+  --fredokaOne: 'Fredoka One';
+  --400: 400;
+  --600: 600;
+  --800: 800;
 }
+
 * {
-  margin:0;
-  padding:0;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
-body{
-  font-family:var(--fredokaOne);
+body {
+  font-family: var(--fredokaOne);
   font-weight: 400;
   background-image: url('../img/5547302.jpg');
   background-size: cover;
 }
 
-a{
+a {
   color: black;
-text-decoration: none;
+  text-decoration: none;
 }
 
-a:visited{
-  color:black;
+a:visited {
+  color: black;
 }
 
-.container{
+.container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,71 +40,76 @@ a:visited{
 }
 
 
-.h1{
+.h1 {
   border-bottom: 1px solid black;
   border-bottom-width: 1px;
-width: 80%;
-text-align: center;
-padding-bottom: 0.4em;
-border-width: .1em;
-font-size: 3em;
-transition: all ease-in 700ms;
+  width: 80%;
+  text-align: center;
+  padding-bottom: 0.4em;
+  border-width: .1em;
+  font-size: 3em;
+  transition: all ease-in 700ms;
 
 }
-form{
+
+form {
   position: relative;
   width: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding:5em 2em 2em 2em;
-  gap:2em;
+  padding: 5em 2em 2em 2em;
+  gap: 2em;
 }
 
-.info-form{
+.info-form {
   position: absolute;
-top: 10px;
-right: 0;
-font-size: .7em;
+  top: 10px;
+  right: 0;
+  font-size: .7em;
 }
-label,input{
+
+label,
+input {
   width: 100%;
 }
 
-label{
+label {
   line-height: 2em;
 }
 
-input{
+input {
   padding: .8em;
 }
-input:invalid{
-  border:1px solid red;
+
+input:invalid {
+  border: 1px solid red;
 }
-#submit{
-  padding:1.2em;
+
+#submit {
+  padding: 1.2em;
   background-color: transparent;
   border: none;
-  box-shadow: 0px 1px 10px rgba(0,0,0,.5);
+  box-shadow: 0px 1px 10px rgba(0, 0, 0, .5);
   cursor: pointer;
   font-weight: var(--600);
   font-family: var(--fredokaOne);
 
 }
 
-#afficheMotDePasse{
+#afficheMotDePasse {
   width: 20px;
   padding: 0;
 }
 
-::placeholder{
+::placeholder {
   font-family: var(--fredokaOne);
   font-weight: var(--600);
 }
 
-#errorMail , #errorPassword{
-  color:red;
+#errorMail,
+#errorPassword {
+  color: red;
   font-size: 1em;
   transition: all ease-in 700ms;
 }
-

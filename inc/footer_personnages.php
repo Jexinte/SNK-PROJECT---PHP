@@ -3,15 +3,14 @@
 </footer>
 
 <style>
+  .footer-personnages {
+    background: transparent;
+    width: 100%;
+    text-align: center;
+    padding: 2em;
+  }
 
-.footer-personnages{
-  background: transparent;
-width: 100%;
-text-align: center;
-padding: 2em;
-}
-
-.footer-personnages-paragraph{
-  font-weight: 600;
-}
+  .footer-personnages-paragraph {
+    font-weight: 600;
+  }
 </style>

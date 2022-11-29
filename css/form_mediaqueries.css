@@ -1,13 +1,16 @@
-@media screen and (max-width:992px){
-  #errorMail,#errorPassword{
+@media screen and (max-width:992px) {
+
+  #errorMail,
+  #errorPassword {
     font-size: 11px;
   }
-  .h1{
+
+  .h1 {
     transition: all ease-in 700ms;
     font-size: 2em;
   }
 
-  body{
+  body {
     background-image: url('../img/levi2.jpg');
     background-position: bottom right;
     background-size: 50%;
