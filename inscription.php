@@ -15,6 +15,12 @@
 </head>
 
 <body>
+  <style>
+    body{
+      background-image: url(https://wallup.net/wp-content/uploads/2016/05/14/66459-Shingeki_no_Kyojin.jpg);
+      background-size: cover;
+    }
+  </style>
   <div class="container">
 
     <?php include './inc/header_inscription.php'; ?>

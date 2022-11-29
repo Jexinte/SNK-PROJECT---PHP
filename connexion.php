@@ -149,7 +149,7 @@ use ReallySimpleJWT\Token;
 
   <style>
     body {
-      background-image: url('./img/mikasa.jpg');
+      background-image: url(https://wallup.net/wp-content/uploads/2016/05/14/66459-Shingeki_no_Kyojin.jpg);
       background-size: cover;
     }
   </style>
