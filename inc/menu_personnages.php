@@ -57,6 +57,23 @@ body{
     color:gray;
   }
 
+  @media screen and (max-width:992px) {
+  
+    header{
+      padding-bottom: 4em;
+  transition: padding-bottom ease-in 700ms;
+}
+
+nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5em;
+  transition: all ease-in 700ms;
+}
+
+}
+
 
 </style>
 

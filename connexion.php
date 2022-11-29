@@ -112,8 +112,8 @@
                   $token = Token::customPayload($payload,$secret);
                    setcookie('token',$token,time()+86400);
                    setcookie('userid',$identifiantDeLutilisateurDansLePayload,time()+86400);
-                   header('location:personnages.php');
-                  
+                    header('location:personnages.php');
+                  echo $token;
               
                 
                 }

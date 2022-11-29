@@ -5,9 +5,14 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- MEDIA QUERIES -->
+  <link rel="stylesheet" href="./css/menu_mediaqueries.css">
+  <link rel="stylesheet" href="./css/creation_personnage.css">
   <title>Création de personnage </title>
 </head>
 <body>
+  <main>
+
 <?php
 
 
@@ -15,15 +20,7 @@ include './config/connexion_bdd2.php';
 include './config/connexion_bdd.php';
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
- <meta charset="UTF-8">
- <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Personnages</title>
-</head>
-<body>
+
 
  <div class="container">
    <!-- HEADER -->
@@ -33,11 +30,10 @@ include './config/connexion_bdd.php';
     //* ERREURS
         $error_file_upload = "";
         $error_file_upload_2 = "";
-        $error_nom = $error_origine = "";
+        $error_nom = $error_origine = $error_affiliation = $error_histoire = "";
 
     //* NECESSAIRE POUR LA PARTIE ENREGISTREMENT
-        $origine_final = "";
-        $nom_final = "";
+        $nom_final = $histoire_final = $affiliation_final = $origine_final = "" ;
         $filename_image_carte_final_result = $filename_image_histoire_final_result = "";
         $tmp_nom_0 = $tmp_nom_1 = "";
         $destination_image_carte =  $destination_image_histoire = "";
@@ -47,15 +43,13 @@ include './config/connexion_bdd.php';
      //* NECESSAIRE POUR LA PARTIE ENREGISTREMENT DU PERSONNAGE DANS LA BASE DE DONNES 
      $user_id = intval($_POST['userid']);
 
-   function gestion_contenu_des_inputs_textes() {
+   function gestion_contenu_input_nom() {
     global $error_nom;
     global $error_origine;
-    global $origine_final;
     global $nom_final;
 
     $nom_personnage = $_POST['nom'];
-    $origine_personnage = $_POST['origine'];
-    $origine_attendu = array('Eldiens','Mahr','Titans');
+  
 
     if(preg_match('/[A-Z\sa-z]/',$nom_personnage))
       {
@@ -68,20 +62,74 @@ include './config/connexion_bdd.php';
       $error_nom = '<p id="error">Merci de ne pas inclure d\'accent ou de chiffres mais uniquement des lettres </p>';
     }
 
-    if(in_array($origine_personnage,$origine_attendu))
-    {
-      $error_origine = "";
-      $origine_final = $origine_personnage;
-    }
+
+  }
+
+  gestion_contenu_input_nom();
+
+  function gestion_contenu_input_histoire(){
+    
+      global $error_histoire;
+      global $histoire_final;
+      $histoire_personnage = $_POST['histoire'];
+
+      if(preg_match('/[A-Z\sa-z]/',$histoire_personnage))
+      {
+        $error_histoire = "";
+        $histoire_final = $histoire_personnage;
+      }
 
     else
     {
-      $error_origine = '<p id="error">Merci de n\'inscrire que les origines suivantes : Eldiens , Mahr ou Titans</p>';
+      $error_histoire = '<p id="error">Merci de ne pas inclure d\'accent ou de chiffres mais uniquement des lettres </p>';
     }
 
   }
 
-  gestion_contenu_des_inputs_textes();
+  gestion_contenu_input_histoire();
+
+
+  function gestion_contenu_input_affiliation(){
+    
+    global $error_affiliation;
+    global $affiliation_final;
+    $affiliation_personnage = $_POST['affiliation'];
+
+    if(preg_match('/[A-Z\sa-z]/',$affiliation_personnage))
+    {
+      $error_affiliation = "";
+      $affiliation_final = $affiliation_personnage;
+    }
+
+  else
+  {
+    $error_affiliation = '<p id="error">Merci de ne pas inclure d\'accent ou de chiffres mais uniquement des lettres </p>';
+  }
+  
+}
+
+gestion_contenu_input_affiliation();
+
+function gestion_contenu_input_origine(){
+
+  global $origine_final;
+  global $error_origine;
+  $origine_personnage = $_POST['origine'];
+  $origine_attendu = array('Eldiens','Mahr','Titans');
+  
+  if(in_array($origine_personnage,$origine_attendu))
+  {
+    $error_origine = "";
+    $origine_final = $origine_personnage;
+  }
+
+  else
+  {
+    $error_origine = '<p id="error">Merci de n\'inscrire que les origines suivantes : Eldiens , Mahr ou Titans</p>';
+  }
+}
+
+gestion_contenu_input_origine();
 
 
     function gestion_contenu_fichiers(){
@@ -139,6 +187,8 @@ include './config/connexion_bdd.php';
     function enregistrement_personnage(){
 
       global $origine_final;
+      global $histoire_final;
+      global $affiliation_final;
       global $nom_final;
       global $tmp_nom_0;
       global $tmp_nom_1;
@@ -149,15 +199,15 @@ include './config/connexion_bdd.php';
       global $user_id;
       global $bdd2;
 
-      $histoire = $_POST['histoire'];
-      $affiliation = $_POST['affiliation'];
+     
       $image_carte_url = "http://localhost/shingeki-no-kyojin/img/$filename_image_carte_final_result";
       $image_histoire_url = "http://localhost/shingeki-no-kyojin/img/$filename_image_histoire_final_result";
 
+      //* Tant que les inputs n'auront pas leur valeurs définitives fourni par les précédentes fonctions aucun enregistrement ne sera effectué !
       if(!empty($nom_final) && !empty($origine_final) && !empty($tmp_nom_0) && !empty($tmp_nom_1) && !empty($filename_image_carte_final_result) && !empty($filename_image_histoire_final_result)){
         move_uploaded_file($tmp_nom_0,$destination_image_carte);
         move_uploaded_file($tmp_nom_1,$destination_image_histoire);
-        $bdd2->query("INSERT INTO personnages2 (nom,histoire,affiliation,origine,imageCarte,imageHistoire,id_user) VALUES('$nom_final','$histoire','$affiliation','$origine_final','$image_carte_url','$image_histoire_url','$user_id')");
+        $bdd2->query("INSERT INTO personnages2 (nom,histoire,affiliation,origine,imageCarte,imageHistoire,id_user) VALUES('$nom_final','$histoire_final','$affiliation_final','$origine_final','$image_carte_url','$image_histoire_url','$user_id')");
          header('location:personnages.php');
       }
 
@@ -182,12 +232,13 @@ include './config/connexion_bdd.php';
   Histoire <br>
   <textarea name="histoire" id="histoire" cols="30" rows="10" required></textarea> <br>
 </label>
+<?php echo $error_histoire; ?> <br>
 
 <label for="affiliation">
   Affiliation <br>
   <input type="text" id="affiliation" name="affiliation" required><br>
 </label>
-
+<?php echo $error_affiliation; ?> 
 <label for="origine">
   Origine <br>
   <input type="text" id="origine" name="origine" required><br>
@@ -217,47 +268,7 @@ include './config/connexion_bdd.php';
 </div>
 <?php include './inc/footer_personnages.php'?>
 </div>
-<style>
-.container-box
-{
- display: flex;
- flex-direction: column;
- gap: 2em;
- transition: all ease-in 700ms;
- margin-bottom: 4em;
-}
 
-form{
-    width: 80%;
-  margin: 0 auto;
-}
-
-#error{
-  color:red;
-}
-input,textarea{
-  width: 100%;
-  padding: 1em;
-}
-
-textarea{
-  resize: none;
-}
-
-header{
- margin-bottom: 8em;
-}
-
-label{
-  line-height: 2em;
-}
-/* label:nth-child(7){
-  display: none;
-} */
-h1{
-  text-align: center;
-  font-size: 2.5em;
-}
-</style>
+</main>
 </body>
 </html>

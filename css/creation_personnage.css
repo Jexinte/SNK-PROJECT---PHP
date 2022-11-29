@@ -1,0 +1,51 @@
+.container-box
+{
+ display: flex;
+ flex-direction: column;
+ gap: 2em;
+ transition: all ease-in 700ms;
+ margin-bottom: 4em;
+}
+
+form{
+    width: 80%;
+  margin: 0 auto;
+}
+
+#error{
+  color:red;
+  font-size: 14px;
+  transition: all ease-in 700ms;
+}
+input,textarea{
+  width: 100%;
+  padding: 1em;
+  margin-bottom: 1em;
+}
+
+textarea{
+  resize: none;
+}
+
+header{
+ margin-bottom: 8em;
+}
+
+label{
+  line-height: 2em;
+}
+
+h1{
+  text-align: center;
+  font-size: 2.5em;
+}
+
+@media screen and (max-width:992px) {
+  #error{
+    color: red;
+    font-size: 11px;
+    transition: all ease-in 700ms;
+  }
+
+  
+}

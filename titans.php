@@ -54,8 +54,9 @@
   flex-wrap: wrap;
   gap: 2em;
   justify-content: center;
-  transition: all ease-in 700ms;
+  transition: flex-wrap ease-in 700ms;
   margin-bottom: 4em;
+  
 }
 
 header{

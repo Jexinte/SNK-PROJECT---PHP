@@ -29,9 +29,11 @@ include './config/connexion_bdd.php';
    <?php 
 
      $error_file_upload =  $error_file_upload2 = "";
-     $error_nom = $error_origine = "";
+     $error_nom = $error_origine = $error_histoire = $error_affiliation = "";
      $origine_final = "";
      $nom_final = "";
+     $histoire_final = "";
+     $affiliation_final = "";
      $data_personnage = "";
      
      
@@ -44,33 +46,121 @@ include './config/connexion_bdd.php';
    if(isset($_POST['submit'])){
      
       
-      function gestion_contenu_des_inputs_textes()
+      function gestion_caracteres_input_nom()
       {
         global $error_nom;
         global $nom_final;
-        global $origine_final;
-        global $error_origine;
+        global $data_personnage;
 
         $nom = $_POST['nom'];
-        $origine = $_POST['origine'];
-        $origine_disponible = array ('Eldiens','Mahr','Titans');
-        
-        if(preg_match('/[A-Z\sa-z]/',$nom)):
+     
+        if(empty($nom)){
+          $error_nom = '<p id="error">Ce champ ne peut-être vide !</p>';
+          $nom_final = $data_personnage['nom'];
+        }
+
+        elseif(!preg_match('/[A-Z\sa-z]/',$nom)){
+          $error_nom = '<p id="error">Merci de n\'inclure que des lettres majuscules ou minuscules , les chiffres ne sont pas autorisés</p>';
+          $nom_final = $data_personnage['nom'];
+        }
+        elseif(preg_match('/[A-Z\sa-z]/',$nom) && !empty($nom)){
           $error_nom = "";
           $nom_final = $nom;
+        }
+      }
 
-        else:
-          $error_nom = '<p id="error">Merci de ne pas inclure d\'accent ou de chiffres mais uniquement des lettres </p>';
-        endif;
+      gestion_caracteres_input_nom();
 
-        $resultat = match(true) {
-          in_array($origine,$origine_disponible) => $origine_final = $origine,
-          default => $error_origine = '<p id="error">Merci de n\'inscrire que les origines suivantes : Eldiens , Mahr ou Titans</p>'
-        };
+      function gestion_caracteres_input_histoire()
+      {
+
+        global $histoire_final;
+        global $error_histoire;
+        global $data_personnage;
+        
+        $histoire = $_POST['histoire'];
+      
+     
+        if(empty($histoire)){
+          $error_histoire = '<p id="error">Ce champ ne peut-être vide !</p>';
+          $histoire_final = $data_personnage['histoire'];
+        }
+
+        elseif(!preg_match('/[A-Z\sa-z]/',$histoire)){
+          $error_histoire = '<p id="error">Merci de n\'inclure que des lettres majuscules ou minuscules , les chiffres ne sont pas autorisés</p>';
+          $histoire_final = $data_personnage['histoire'];
+        }
+        elseif(preg_match('/[A-Z\sa-z]/',$histoire) && !empty($histoire)){
+          $error_histoire = "";
+          $histoire_final = $histoire;
+        }
+      
+      }
+
+      gestion_caracteres_input_histoire();
+
+
+      function gestion_caracteres_input_affiliation()
+      {
+
+        global $affiliation_final;
+        global $error_affiliation;
+        global $data_personnage;
+        
+        $affiliation = $_POST['affiliation'];
+      
+     
+        if(empty($affiliation)){
+          $error_affiliation = '<p id="error">Ce champ ne peut-être vide !</p>';
+          $affiliation_final = $data_personnage['affiliation'];
+        }
+
+        elseif(!preg_match('/[A-Z\sa-z]/',$affiliation)){
+          $error_affiliation = '<p id="error">Merci de n\'inclure que des lettres majuscules ou minuscules , les chiffres ne sont pas autorisés</p>';
+          $affiliation_final = $data_personnage['affiliation'];
+        }
+        elseif(preg_match('/[A-Z\sa-z]/',$affiliation) && !empty($affiliation)){
+          $error_affiliation = "";
+          $affiliation_final = $affiliation;
+        }
+      
 
       }
 
-      gestion_contenu_des_inputs_textes();
+      gestion_caracteres_input_affiliation();
+
+
+
+      function gestion_caracteres_input_origine()
+      {
+        global $origine_final;
+        global $error_origine;
+        global $data_personnage;
+
+        $origine = $_POST['origine'];
+        $origine_disponible = array ('Eldiens','Mahr','Titans');
+
+         if(empty($origine) && !in_array($origine,$origine_disponible))
+         {
+           $error_origine = '<p id="error">Ce champ ne peut-être vide et doit contenir au moins l\'une des origines suivante : Eldiens , Mahr ou Titans !</p>';
+           $origine_final = $data_personnage['origine'];
+         }
+
+         elseif(!preg_match('/[A-Z\sa-z]/',$origine))
+         {
+           $error_origine = '<p id="error">Merci de n\'inclure que des lettres majuscules ou minuscules , les chiffres ne sont pas autorisés</p>';
+           $origine_final = $data_personnage['origine'];
+         }
+
+         elseif(preg_match('/[A-Z\sa-z]/',$origine) && !empty($origine) && in_array($origine,$origine_disponible))
+         {
+           $error_origine = "";
+           $origine_final = $origine;
+         }
+      
+      }
+
+      gestion_caracteres_input_origine();
 
       $valeur_image_carte_apres_verification = $valeur_image_histoire_apres_verification = "";
 
@@ -233,13 +323,13 @@ include './config/connexion_bdd.php';
           global $valeur_image_histoire_apres_verification;
           global $nom_final;
           global $origine_final;
+          global $histoire_final;
+          global $affiliation_final;
           global $id_personnage;
           global $bdd2;
 
-          $histoire = $_POST['histoire'];
-          $affiliation = $_POST['affiliation'];
-          
-          $req = $bdd2->query("UPDATE personnages2 SET nom = '$nom_final',histoire = '$histoire',affiliation = '$affiliation',origine = '$origine_final',imageCarte = '$valeur_image_carte_apres_verification',imageHistoire='$valeur_image_histoire_apres_verification' WHERE id=$id_personnage");
+
+          $req = $bdd2->query("UPDATE personnages2 SET nom = '$nom_final',histoire = '$histoire_final',affiliation = '$affiliation_final',origine = '$origine_final',imageCarte = '$valeur_image_carte_apres_verification',imageHistoire='$valeur_image_histoire_apres_verification' WHERE id=$id_personnage");
           $req->execute();
 
       }
@@ -270,12 +360,14 @@ include './config/connexion_bdd.php';
 
 <label for="histoire">
   Histoire <br>
-  <textarea name="histoire" id="histoire" class="histoire" cols="30" rows="10" required ><?php echo $data_personnage['histoire'];?></textarea> <br>
+  <textarea name="histoire" id="histoire" class="histoire" cols="30" rows="10"  ><?php echo $data_personnage['histoire'];?></textarea> <br>
+  <?php echo $error_histoire ?? null ?>
 </label>
 
 <label for="affiliation">
   Affiliation <br>
   <input type="text" id="affiliation" name="affiliation" value="<?php echo $data_personnage['affiliation']; ?>" ><br>
+  <?php echo $error_affiliation ?? null ?>
 </label>
 
 <label for="origine">
@@ -332,6 +424,7 @@ form{
 input,textarea{
   width: 100%;
   padding: 1em;
+  margin-bottom: 1em;
 }
 
 textarea{

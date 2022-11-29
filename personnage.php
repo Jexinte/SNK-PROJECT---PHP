@@ -27,15 +27,38 @@
       </div>
     </div>
     <?php 
-      if($personnage['id_user'] === intval($_COOKIE['userid'])):
+
+
+?>
+    <?php 
+      if(intval($personnage['id_user']) === intval($_COOKIE['userid'])):
+        
     ?>
     <div class="rights">
       <a href="modifier_un_personnage.php?id=<?php echo $id_personnage ?>" id="modifier" >Modifier</a>
-      <a href="#" id="supprimer" >Supprimer</a>
 
+      <form action="personnage.php?id=<?php echo $id_personnage?>" method="post" enctype="multipart/form-data">
+        <button type="submit" name="submit"  id="supprimer">Supprimer</button>
+        </label>
+        </label>
+      </form>
     </div>
-    <?php endif;?> 
+
+
+    <?php
+   endif;
+   ?> 
     <?php endwhile; ?>
+    <?php 
+
+    if(isset($_POST['submit'])):
+      $req= "DELETE FROM personnages2 WHERE id = '$id_personnage'";
+      $bdd2->exec($req);
+      header('location:personnages.php');
+     endif;
+    
+    
+    ?>
     <?php include './inc/footer_personnages.php' ?>
   </div>
 
@@ -95,6 +118,10 @@ border-radius: 10px;
 color: white;
 padding: .5em;
 border-radius: 10px;
+font-size: 1.5em;
+border: none;
+font-family: 'Fredoka One';
+cursor: pointer;
 }
     </style>
 </body>
